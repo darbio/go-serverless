@@ -1,0 +1,27 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: darbio
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: go-darbio
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+
+functions:
+  example:
+    runtime: provided.al2023
+    handler: functions/example/main.go # or just functions/example
+    events:
+      - httpApi:
+          path: /
+          method: get
+
+plugins:
+  - serverless-go-plugin
+
+custom:
+  go:
+    cgo: 0 # CGO_ENABLED flag
+    cmd: 'GOOS=linux GOARCH=amd64 go build -ldflags="-s -w"' # compile command
+    supportedRuntimes: ["provided.al2023"]
+    buildProvidedRuntimeAsBootstrap: true
